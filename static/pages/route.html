@@ -1,0 +1,31 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ResQFlow – Safest Route</title><meta name="theme-color" content="#c1121f"><link rel="manifest" href="../manifest.json">
+<link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"></head>
+<body data-root="../"><header id="hdr"></header><div id="banner"></div><main>
+<h2>🧭 Find Safest Route</h2>
+<div class="row"><label>Start<select id="start"></select></label><label>Destination<select id="dest"></select></label>
+<label>Algorithm<select id="algo"><option value="dijkstra">Dijkstra</option><option value="astar">A*</option></select></label></div>
+<div class="row"><button class="navy" onclick="useGps()">📍 Use my GPS → nearest safe shelter</button><button onclick="App.demo.landslide()">Simulate Landslide</button></div>
+<p id="gps"></p><div class="card" id="route"></div><div id="map"></div>
+<script>
+let M;
+async function init(){await App.boot('Safest Route');M=App.drawMap('map');App.onChange=render;
+  const opt=n=>`<option value="${n.id}">${n.name}</option>`;
+  start.innerHTML=Graph.nodes.map(opt).join('');dest.innerHTML=Graph.nodes.filter(n=>n.type==='shelter').map(opt).join('');
+  start.onchange=()=>App.pick(start.value,'start');dest.onchange=()=>App.pick(dest.value,'dest');
+  algo.onchange=()=>{App.state.algo=algo.value;App.save();render()};render()}
+function render(){const s=App.state;start.value=s.start;dest.value=s.dest;algo.value=s.algo;
+  const {best,alts}=App.route();App.renderRoute(document.getElementById('route'),best,alts);M&&M.draw(best)}
+function useGps(){const el=document.getElementById('gps');
+  if(!GPS.pos){el.textContent='Location unavailable. Select your location manually.';return}
+  const n=Graph.nearest(GPS.pos.lat,GPS.pos.lng);
+  el.innerHTML=`📍 Latitude ${GPS.pos.lat.toFixed(5)}, Longitude ${GPS.pos.lng.toFixed(5)}<br>Nearest map node: ${n.node.name} (${n.km.toFixed(1)} km away)`+(n.km>20?'<br>⚠️ You are outside the Chennai demo area, so pick a start manually.':'');
+  if(n.km>20)return;
+  App.state.start=n.node.id;App.recalc();const r=Router.nearestShelter(Graph,n.node.id,App.state.algo);
+  if(r){App.state.dest=r.shelter.id;el.innerHTML+=`<br>Nearest safe shelter: ${r.shelter.name} – ${r.route.dist.toFixed(1)} km`}App.save();render()}
+</script>
+</main><nav id="nav"></nav>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="../js/risk-model.js"></script><script src="../js/offline-db.js"></script><script src="../js/graph.js"></script>
+<script src="../js/dijkstra.js"></script><script src="../js/gps.js"></script><script src="../js/sync.js"></script><script src="../app.js"></script>
+<script>init();</script></body></html>

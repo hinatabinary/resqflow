@@ -1,0 +1,14 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ResQFlow – Guide</title><meta name="theme-color" content="#c1121f"><link rel="manifest" href="../manifest.json">
+<link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"></head>
+<body data-root="../"><header id="hdr"></header><div id="banner"></div><main>
+<h2>📖 Emergency Guide (works offline)</h2><div id="g"></div>
+<script>
+async function init(){await App.boot('Emergency Guide');
+  g.innerHTML=(await DB.getAll('emergencyGuides')).map(x=>`<details class="card" open><summary><b>${x.icon} ${x.title}</b></summary><ul>${x.tips.map(t=>`<li>${t}</li>`).join('')}</ul></details>`).join('')}
+</script>
+</main><nav id="nav"></nav>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="../js/risk-model.js"></script><script src="../js/offline-db.js"></script><script src="../js/graph.js"></script>
+<script src="../js/dijkstra.js"></script><script src="../js/gps.js"></script><script src="../js/sync.js"></script><script src="../app.js"></script>
+<script>init();</script></body></html>

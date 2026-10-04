@@ -1,0 +1,33 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ResQFlow – Home</title><meta name="theme-color" content="#c1121f"><link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="style.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"></head>
+<body data-root=""><header id="hdr"></header><div id="banner"></div><main>
+<div class="grid">
+  <a class="btn navy" href="pages/map.html">🗺️ Smart Map</a><a class="btn navy" href="pages/route.html">🧭 Find Safest Route</a>
+  <a class="btn red" href="pages/sos.html">🆘 SOS</a><a class="btn navy" href="pages/contacts.html">📞 Emergency Contacts</a>
+  <a class="btn navy" href="pages/prepare.html">🛡️ Prepare Offline</a><a class="btn navy" href="#alerts">📢 Disaster Alerts</a>
+  <a class="btn navy" href="pages/guide.html">📖 Emergency Guide</a><a class="btn navy" href="pages/map.html#report">🚧 Report Road Blockage</a>
+</div>
+<div class="card" id="route"></div>
+<div class="card" id="alerts"><h3>📢 Disaster Alerts</h3><div id="alertList"></div></div>
+<div class="card warn"><h3>🎬 Demo Mode</h3>
+  <div class="row"><button onclick="App.demo.reset()">1 · Normal</button><button onclick="App.demo.rain()">2 · Heavy Rain</button>
+  <button class="red" onclick="App.demo.landslide()">3 · Simulate Landslide</button><button class="navy" onclick="App.demo.offline()" id="offBtn">5 · Disable Internet</button></div>
+  <p id="log"></p></div>
+<p id="sync"></p>
+<script>
+async function init(){await App.boot('AI-Powered Disaster Evacuation');App.onChange=render;render()}
+async function render(){
+  const {best,alts}=App.route();App.renderRoute(document.getElementById('route'),best,alts);
+  const bad=Graph.edges.filter(e=>e.blocked||e.risk>=70);
+  document.getElementById('alertList').innerHTML=bad.length?bad.map(e=>`<p class="HIGH">${e.blocked?'⚫ BLOCKED':'🔴 HIGH RISK '+e.risk+'%'} – ${Graph.name(e)}</p>`).join(''):'<p class="LOW">🟢 No high-risk roads right now.</p>';
+  document.getElementById('log').innerHTML=App.state.log.slice(-4).join('<br>');
+  document.getElementById('offBtn').textContent=App.state.demoOffline?'5 · Enable Internet':'5 · Disable Internet';
+  document.getElementById('sync').textContent=await Sync.label();
+}
+</script>
+</main><nav id="nav"></nav>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="js/risk-model.js"></script><script src="js/offline-db.js"></script><script src="js/graph.js"></script>
+<script src="js/dijkstra.js"></script><script src="js/gps.js"></script><script src="js/sync.js"></script><script src="app.js"></script>
+<script>init();</script></body></html>

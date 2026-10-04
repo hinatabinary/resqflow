@@ -1,0 +1,28 @@
+:root{--red:#c1121f;--navy:#0b2545;--bg:#f5f3ef;--ok:#1b7f3b;--warn:#b7791f;--bad:#c1121f}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.5 "Segoe UI",system-ui,sans-serif;background:var(--bg);color:#111;padding-bottom:72px}
+header{background:var(--navy);color:#fff;padding:12px 16px}
+header h1{margin:0;font-size:1.5rem}header small{opacity:.8}
+#status{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;font-size:.85rem}
+#status span{background:#ffffff26;padding:3px 10px;border-radius:14px}
+#banner{display:none;background:#000;color:#fff;padding:10px;text-align:center;font-weight:600}
+main{max-width:900px;margin:auto;padding:12px}
+h2,h3{margin:.2em 0 .4em}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+.btn,button{font:600 1rem inherit;font-family:inherit;padding:16px 12px;border:2px solid var(--navy);border-radius:10px;background:#fff;color:var(--navy);cursor:pointer;text-decoration:none;text-align:center;display:block}
+.btn:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid #f2a900;outline-offset:2px}
+.btn.red,button.red{background:var(--red);border-color:var(--red);color:#fff}
+.btn.navy,button.navy{background:var(--navy);color:#fff}
+.card{background:#fff;border-left:6px solid var(--navy);padding:12px 14px;margin:12px 0;border-radius:6px}
+.card.warn{border-color:var(--warn)}.card.bad{border-color:var(--bad)}.card.ok{border-color:var(--ok)}
+.LOW{color:var(--ok)}.MEDIUM{color:var(--warn)}.HIGH{color:var(--bad)}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.row>*{flex:1;min-width:130px}
+select,input{font:inherit;padding:12px;border:2px solid #999;border-radius:8px;width:100%}
+#map{height:55vh;min-height:320px;border-radius:8px;border:2px solid var(--navy)}
+.ico{font-size:20px;line-height:26px;text-align:center}
+nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:var(--navy);overflow-x:auto;z-index:1000}
+nav a{flex:1;min-width:62px;color:#fff;padding:14px 6px;text-align:center;font-size:.8rem;text-decoration:none}
+nav a.on{background:var(--red)}
+.note{font-size:.8rem;color:#555;margin:20px 0}
+.SOS{font-size:2rem;padding:28px}
+body.lowbat *{animation:none!important;transition:none!important}

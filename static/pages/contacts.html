@@ -1,0 +1,21 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ResQFlow – Contacts</title><meta name="theme-color" content="#c1121f"><link rel="manifest" href="../manifest.json">
+<link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"></head>
+<body data-root="../"><header id="hdr"></header><div id="banner"></div><main>
+<h2>📞 Emergency Contacts</h2><div class="card bad"><h3>🚨 Official numbers (India)</h3><div id="off" class="grid"></div></div>
+<div class="card"><h3>My Emergency Contacts</h3><div id="mine" class="grid"></div>
+<div class="row"><input id="n" placeholder="Name"><input id="p" type="tel" placeholder="Phone number"><button class="navy" onclick="add()">Save contact</button></div></div>
+<script>
+async function init(){await App.boot('Emergency Contacts');render()}
+async function render(){const all=await DB.getAll('emergencyContacts');
+  const call=c=>`<div><b>${c.name}</b> ${c.number}<a class="btn red" href="tel:${c.number}">CALL</a>${c.official?'':`<button onclick="del('${c.id}')">Delete</button>`}</div>`;
+  off.innerHTML=all.filter(c=>c.official).map(call).join('');
+  mine.innerHTML=all.filter(c=>!c.official).map(call).join('')||'<p>No personal contacts yet.</p>'}
+async function add(){if(!n.value||!p.value)return;await DB.put('emergencyContacts',{id:'u'+Date.now(),name:n.value,number:p.value});n.value=p.value='';render()}
+async function del(id){await DB.del('emergencyContacts',id);render()}
+</script>
+</main><nav id="nav"></nav>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="../js/risk-model.js"></script><script src="../js/offline-db.js"></script><script src="../js/graph.js"></script>
+<script src="../js/dijkstra.js"></script><script src="../js/gps.js"></script><script src="../js/sync.js"></script><script src="../app.js"></script>
+<script>init();</script></body></html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ResQFlow – Smart Map</title><meta name="theme-color" content="#c1121f"><link rel="manifest" href="../manifest.json">
+<link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"></head>
+<body data-root="../"><header id="hdr"></header><div id="banner"></div><main>
+<h2>🗺️ Smart Map</h2>
+<p>🟢 Low · 🟡 Medium · 🔴 High · ⚫ Blocked. Tap a place → set <b>Start</b> or <b>Go here</b>. Blue line = recommended route.</p>
+<div id="map"></div><div class="card" id="route"></div>
+<div class="card" id="report"><h3>🚧 Report Road Blockage</h3><label>Select road<select id="road"></select></label>
+  <p>Is this road blocked?</p><div class="row"><button class="red" onclick="report(true)">YES</button><button onclick="report(false)">NO</button></div><p id="msg"></p></div>
+<script>
+let M;
+async function init(){await App.boot('Smart Map');M=App.drawMap('map',{pick:true});App.onChange=render;
+  document.getElementById('road').innerHTML=Graph.edges.map(e=>`<option value="${e.id}">${Graph.name(e)}</option>`).join('');render()}
+function render(){const {best,alts}=App.route();App.renderRoute(document.getElementById('route'),best,alts);M&&M.draw(best)}
+async function report(yes){const id=document.getElementById('road').value,s=App.state;
+  s.blocked=s.blocked.filter(x=>x!==id);s.landslides=s.landslides.filter(x=>x!==id);
+  if(yes)s.blocked.push(id);
+  await Sync.queue('roadReport',{edge:id,blocked:yes});App.recalc();
+  document.getElementById('msg').textContent=(yes?'Road marked as BLOCKED. ':'Road marked as open. ')+'Graph updated. Route recalculated. '+(App.online()?'':'Saved locally – will sync when internet returns.');
+  Sync.run();render()}
+</script>
+</main><nav id="nav"></nav>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="../js/risk-model.js"></script><script src="../js/offline-db.js"></script><script src="../js/graph.js"></script>
+<script src="../js/dijkstra.js"></script><script src="../js/gps.js"></script><script src="../js/sync.js"></script><script src="../app.js"></script>
+<script>init();</script></body></html>

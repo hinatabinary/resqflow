@@ -1,0 +1,20 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ResQFlow – Prepare</title><meta name="theme-color" content="#c1121f"><link rel="manifest" href="../manifest.json">
+<link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"></head>
+<body data-root="../"><header id="hdr"></header><div id="banner"></div><main>
+<h2>🛡️ Prepare Mode</h2><div class="card"><label>Select area<select id="area"><option>Chennai (demo)</option></select></label>
+<div class="row"><button class="navy" onclick="dl()">Download Emergency Data</button></div><ul id="steps"></ul><h3 id="ready"></h3><p id="info"></p></div>
+<script>
+async function init(){await App.boot('Prepare Before Disaster');
+  const d=await DB.getAll('downloadedAreas');info.textContent=d.length?'Already stored for offline use: '+d.map(x=>x.id).join(', '):''}
+async function dl(){const S=['Offline map data','Road network','Shelters','Hospitals','Safe zones','Emergency contacts','Disaster guides','Evacuation graph'];
+  steps.innerHTML='';ready.textContent='Downloading...';
+  for(const s of S){await new Promise(r=>setTimeout(r,450));steps.innerHTML+=`<li>✓ ${s}</li>`}
+  await DB.seedArea();App.state.lastSync=Date.now();App.save();  // prototype: data is bundled, "download" is simulated
+  ready.textContent='READY ✓';info.textContent='Your area is ready for offline emergencies.'}
+</script>
+</main><nav id="nav"></nav>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="../js/risk-model.js"></script><script src="../js/offline-db.js"></script><script src="../js/graph.js"></script>
+<script src="../js/dijkstra.js"></script><script src="../js/gps.js"></script><script src="../js/sync.js"></script><script src="../app.js"></script>
+<script>init();</script></body></html>

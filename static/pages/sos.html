@@ -1,0 +1,26 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ResQFlow – SOS</title><meta name="theme-color" content="#c1121f"><link rel="manifest" href="../manifest.json">
+<link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"></head>
+<body data-root="../"><header id="hdr"></header><div id="banner"></div><main>
+<h2>🆘 EMERGENCY SOS</h2>
+<div class="grid" style="grid-template-columns:1fr">
+<a class="btn red SOS" href="tel:112">CALL EMERGENCY (112)</a>
+<a class="btn navy" id="trusted" href="#" onclick="return trusted()">CALL TRUSTED CONTACT</a>
+<a class="btn navy" id="sms" href="#" onclick="return sms()">SEND SMS</a>
+<button onclick="share()">SHARE LOCATION</button></div><p id="msg" class="card"></p>
+<script>
+let mine=[];
+async function init(){await App.boot('SOS');mine=(await DB.getAll('emergencyContacts')).filter(c=>!c.official)}
+const loc=()=>GPS.pos?`https://maps.google.com/?q=${GPS.pos.lat},${GPS.pos.lng}`:null;
+const say=t=>document.getElementById('msg').textContent=t;
+function trusted(){if(!mine.length){say('No trusted contact saved. Add one on the Contacts page.');return false}location.href='tel:'+mine[0].number;return false}
+function sms(){if(!mine.length){say('No trusted contact saved. Add one on the Contacts page.');return false}
+  location.href=`sms:${mine[0].number}?body=${encodeURIComponent('I need help. '+(loc()||'Location unavailable.'))}`;return false}
+async function share(){const l=loc();if(!l){say('Location unavailable. Turn on GPS permission or tell responders your location manually.');return}
+  try{if(navigator.share){await navigator.share({title:'My location',text:'I need help',url:l})}else{await navigator.clipboard.writeText(l);say('Link copied. Paste it into any messaging app: '+l)}}catch(e){say('Sharing was cancelled or is not supported: '+l)}}
+</script>
+</main><nav id="nav"></nav>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="../js/risk-model.js"></script><script src="../js/offline-db.js"></script><script src="../js/graph.js"></script>
+<script src="../js/dijkstra.js"></script><script src="../js/gps.js"></script><script src="../js/sync.js"></script><script src="../app.js"></script>
+<script>init();</script></body></html>
